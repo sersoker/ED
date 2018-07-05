@@ -1,0 +1,122 @@
+sersoker@ei140177:~/Escritorio/Home/ED$ gnuplot
+
+	G N U P L O T
+	Version 4.4 patchlevel 3
+	last modified March 2011
+	System: Linux 3.2.0-23-generic-pae
+
+	Copyright (C) 1986-1993, 1998, 2004, 2007-2010
+	Thomas Williams, Colin Kelley and many others
+
+	gnuplot home:     http://www.gnuplot.info
+	faq, bugs, etc:   type "help seeking-assistance"
+	immediate help:   type "help"
+	plot window:      hit 'h'
+
+Terminal type set to 'wxt'
+gnuplot> clear
+gnuplot> 
+gnuplot> exit
+sersoker@ei140177:~/Escritorio/Home/ED$ clear
+
+sersoker@ei140177:~/Escritorio/Home/ED$ gnuplot 
+
+	G N U P L O T
+	Version 4.4 patchlevel 3
+	last modified March 2011
+	System: Linux 3.2.0-23-generic-pae
+
+	Copyright (C) 1986-1993, 1998, 2004, 2007-2010
+	Thomas Williams, Colin Kelley and many others
+
+	gnuplot home:     http://www.gnuplot.info
+	faq, bugs, etc:   type "help seeking-assistance"
+	immediate help:   type "help"
+	plot window:      hit 'h'
+
+Terminal type set to 'wxt'
+gnuplot> plot "burbuja.dat"
+gnuplot> f(x)=a*x*x
+gnuplot> fit f(x) "burbuja.dat" via a
+
+
+ Iteration 0
+ WSSR        : 4.5402e+18        delta(WSSR)/WSSR   : 0
+ delta(WSSR) : 0                 limit for stopping : 1e-05
+ lambda	  : 3.89025e+08
+
+initial set of free parameter values
+
+a               = 1
+/
+
+ Iteration 1
+ WSSR        : 4.72446e+15       delta(WSSR)/WSSR   : -960
+ delta(WSSR) : -4.53548e+18      limit for stopping : 1e-05
+ lambda	  : 3.89025e+07
+
+resultant parameter values
+
+a               = 0.0322581
+/
+
+ Iteration 2
+ WSSR        : 5.2459e+08        delta(WSSR)/WSSR   : -9.006e+06
+ delta(WSSR) : -4.72446e+15      limit for stopping : 1e-05
+ lambda	  : 3.89025e+06
+
+resultant parameter values
+
+a               = 1.07863e-05
+/
+
+ Iteration 3
+ WSSR        : 0.129011          delta(WSSR)/WSSR   : -4.06625e+09
+ delta(WSSR) : -5.2459e+08       limit for stopping : 1e-05
+ lambda	  : 389025
+
+resultant parameter values
+
+a               = 3.722e-08
+/
+
+ Iteration 4
+ WSSR        : 0.123182          delta(WSSR)/WSSR   : -0.0473181
+ delta(WSSR) : -0.00582874       limit for stopping : 1e-05
+ lambda	  : 38902.5
+
+resultant parameter values
+
+a               = 3.71842e-08
+/
+
+ Iteration 5
+ WSSR        : 0.123182          delta(WSSR)/WSSR   : -7.99892e-15
+ delta(WSSR) : -9.85323e-16      limit for stopping : 1e-05
+ lambda	  : 3890.25
+
+resultant parameter values
+
+a               = 3.71842e-08
+
+After 5 iterations the fit converged.
+final sum of squares of residuals : 0.123182
+rel. change during last iteration : -7.99892e-15
+
+degrees of freedom    (FIT_NDF)                        : 29
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.065174
+variance of residuals (reduced chisquare) = WSSR/ndf   : 0.00424765
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+
+a               = 3.71842e-08      +/- 3.059e-11    (0.08226%)
+
+
+correlation matrix of the fit parameters:
+
+               a      
+a               1.000 
+gnuplot> plot f(x), "burbuja.dat"
+gnuplot> 
+

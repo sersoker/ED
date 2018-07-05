@@ -1,0 +1,294 @@
+#include <iostream>
+#include <stack>
+#include <string>
+#include <list>
+#include <map>
+
+using namespace std;
+
+bool constante (const string & s){
+return  ((s[0]>='0')&& (s[0]<='9'));
+}
+
+ostream & operator<< (ostream & o, const list<string> & cad){
+ list<string>::const_iterator it;
+ for (it = cad.begin(); it!= cad.end(); ++it)
+  o << *it;
+ return o;
+}
+
+
+int evalua(const list<string> & e, const map<string,float> & variables)
+{
+  // Evalua una expresion en postfijo
+  stack<int> v;
+  list<string>::const_iterator it;
+  map<string,float>::const_iterator it_m;
+  int izq,dcha;
+
+  for (it=e.begin(); it!=e.end(); ++it)
+    { 
+      if ( constante(*it) )
+	  v.push( stoi(*it) );
+      else { 
+        it_m = variables.find(*it);
+        if (it_m != variables.end())
+            v.push((*it_m).second);
+        else { // Es operador .....
+	  dcha = v.top(); v.pop();
+          izq = v.top(); v.pop();
+          switch ( (*it)[0] )
+	  {
+	   case '+': v.push(izq+dcha);
+	         break;
+	   case '-':  v.push(izq-dcha);
+	         break;
+           case '*':v.push(izq*dcha);
+	         break;
+           case  '/': v.push(izq/dcha);
+	         break;
+	  }  //case
+       } //es operador
+      } // no es constante
+    } // for
+  return v.top();
+}
+
+
+
+
+
+bool es_numero( const string & s) {
+     return ( (s[0]>='0')&& (s[0]<='9'));
+     }
+
+bool es_variable( const string & s) {
+     return ( (s[0]>='a')&& (s[0]<='z'));
+     }
+
+
+void infijo2Postfijo(const list<string> & inf, list<string> & post){
+     list<string>::const_iterator it;
+     stack<list<string> > pila_p; // Pila de expresiones en postfijo
+     stack<string> operadores;
+     list<string> aux;
+
+     for (it = inf.begin();it!=inf.end(); ++it){
+       if ( (es_numero(*it)) || (es_variable(*it)) ) {
+               pila_p.push(list<string>(1,*it));
+               cout << "vn " << pila_p.top() << endl;
+               }
+       else {
+            switch ( (*it)[0] ) {
+                   case '(': break ; //No hace nada
+                   case ')':  {
+                        aux.clear();
+                        aux = pila_p.top();
+                        pila_p.pop();
+                        pila_p.top().splice(pila_p.top().end(),aux);
+                        pila_p.top().push_back(operadores.top());
+                        operadores.pop();
+                        cout << ") " << pila_p.top() << endl;
+                        break;
+                        }
+                   case '+':case '-': case '*': case '/': {
+                        operadores.push(*it);
+                        break;
+                        }
+                   } // del switch;
+            } // del else
+        } // del for
+         post = pila_p.top();
+      }
+
+void string2infijo( const string & s, list<string> & inf){
+     size_t i,p=0;
+     string aux;
+     while ( (i = s.find_first_of(' ',p)) !=string::npos) {
+
+       aux = s.substr(p,i-p);
+       cout << "p " << p << " i " << i << " l " << i-p << ":" << aux << endl;
+       inf.push_back(aux);
+       p=i+1;
+       }
+       aux = s.substr(p,string::npos);
+       inf.push_back(aux);
+     }
+
+
+	  
+	  
+	 
+  
+
+
+
+void laberinto(int L[][7], int fe, int ce, int fs, int cs)
+{
+  #define nul 0
+  #define arr 1
+  #define dch 2
+  #define abj 3
+  #define izq 4
+
+ 
+  int fa,ca;   // Coordenadas actuales
+  int v;
+  stack<int> pasos; // Pasos dados en el laberinto
+  stack<int> aux; // stack auxiliar para escribir los pasos
+
+
+
+  cout << "En laberinto \n";
+ 
+  pasos.push(dch); // Sup. que inicialmente es el unico movimiento permitido
+                   // Entramos por el lado izquiedo del laberinto
+
+  fa = fe; ca = ce+1;
+  
+  while ( (fa!=fs) || (ca!=cs))
+   {
+     if ((L[fa-1][ca]==0) && (pasos.top()!=abj)) {  //  movemos ^ 
+       pasos.push(arr);
+       fa--;
+     }
+     else if ((L[fa][ca+1]==0) && (pasos.top()!=izq)) { // movemos >
+       pasos.push(dch);
+       ca++;
+     }
+     else if ((L[fa+1][ca]==0) && (pasos.top()!=arr)) { // movemos v
+       pasos.push(abj);
+       fa++;
+     }
+     else  if ((L[fa][ca-1]==0) && (pasos.top()!=dch)) { // movemos <
+       pasos.push(izq);
+       ca--;
+     } else {     // No hay movimiento posible
+       v = pasos.top(); 
+       pasos.pop();   // Retrocedemos al estado anterior
+       L[fa][ca]=2;  // Marcamos esta rama del  laberinto como visitada
+       switch (v){
+       case arr: fa++; break; // Actualizo coordenadas anteriores
+       case dch: ca--; break; 
+       case abj: fa--; break;
+       case izq: ca++; break;
+       }
+        
+     }
+   }
+  // En pasos tenemos el camino, pero en orden inverso
+  // Vuelco la pila en aux, para obtener el orden correcto
+   while (!pasos.empty()){
+    aux.push(pasos.top());
+    pasos.pop();
+  }
+  
+   while (!aux.empty()){ // Imprimimos el camino.
+    switch( aux.top() ){
+    case izq: cout << " <- "; break;
+    case dch: cout << " -> "; break;
+    case arr: cout << " ^ "; break;
+    case abj: cout << " v "; break;
+    } 
+    aux.pop();
+  }
+}
+
+
+
+
+
+int main()
+{
+  stack<int> p;
+  stack<char> q;
+  int x;
+
+ int L[7][7]={ {1,1,1,1,1,1,1},
+		{1,0,0,1,0,0,1},
+		{1,1,0,1,0,1,1},
+		{1,0,0,0,0,1,1},
+		{0,0,1,1,0,0,1},
+		{1,0,1,0,0,1,1},
+		{1,1,1,0,1,1,1}};
+
+  int fe=4, ce=0; // Coordenada  de Entrada (fila,columna)
+  int fs = 6, cs=3; //Coordenada de Salida  (fila,columna)
+
+
+
+  string cadena("32+5*7+2/");
+  string expresion("(((a+b)*c)+(d*e))");
+  string postfijo;
+  map<string,float> var;
+  var["a"]=2;
+  var["b"]=4;
+  var["c"]=8;
+
+  list<string> cad;
+  cad.push_back("3");
+  cad.push_back("a");
+  cad.push_back("+");
+  cad.push_back("5");
+  cad.push_back("*");
+  cad.push_back("7");
+  cad.push_back("+");
+  cad.push_back("2");
+  cad.push_back("/");
+
+  
+   cout << expresion << endl << postfijo << endl;
+
+
+  p.push(1);
+  p.push(2);
+  p.push(3);
+ 
+  while (!p.empty()){
+    cout << p.top();
+    p.pop();
+  }
+
+  cout << "\n Expresion a evaluar " << cad;
+  x = evalua(cad,var);
+
+
+
+  
+  cout << " Resultado  " << x <<"\n";
+ list<string> cad1;
+    cad1.push_back("(");
+    cad1.push_back("23");
+    cad1.push_back("+" );
+    cad1.push_back("(");
+    cad1.push_back("a");
+    cad1.push_back("*");
+    cad1.push_back("2");
+    cad1.push_back(")");
+    cad1.push_back(")");
+
+    string c = "( ( ( 2 + 3 ) * 52 ) + 3 )";
+    list<string> pst;
+    cout << cad1 << endl;
+    infijo2Postfijo(cad1,pst);
+    cout << pst << endl;
+    cad1.clear();
+    string2infijo(c,cad1);
+    cout << c << endl;
+    cout << cad1 << endl;
+    infijo2Postfijo(cad1,pst);
+    cout << pst << endl; 
+
+
+  laberinto(L,fe,ce,fs,cs); 
+}
+
+
+
+
+
+
+
+
+
+ 

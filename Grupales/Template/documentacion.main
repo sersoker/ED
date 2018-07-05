@@ -1,0 +1,170 @@
+/*! \mainpage  Documentación Práctica 1
+
+\version v0
+\author  Bryan Moreno Picamán & Aaron Rodríguez Bueno
+
+\tableofcontents
+
+
+
+\section intro_sec Introducción
+
+ En esta practica se pretende avanzar en el uso de las estructuras de datos, para ello comenzaremos con el diseño de dos tipos de datos, el primero será un tipo capaz de guardar la información asociada a un meteorito, mientras que el segundo implicará el diseño de un contenedor básico, capaz de almacenar un gran volumen de meteoritos.
+
+\section meteorito Conjunto de Datos de Meteoritos
+
+Este conjunto de datos contiene información sobre 45716 meteritos que han caido en la tierra,  actualizado a 14 de Mayo de 2013, con los siguientes datos.
+
+\li nombre: por ejemplo "Andhara" o "Andover", de tipo string.
+\li tipo: secuencia de códigos, separados por comas,  que describen el tipo de meteorito, por ejemplo "Iron, IIAB".
+\li masa: masa del meteorito en gramos.
+\li caido/encontrado: valor binario que indica si ha sido encontrado o sólo sabemos que ha caido (fell/found), 
+\li año: año en que impactó
+\li coordena de latitud
+\li coordena de longitud
+
+Cuando alguno de los campos es desconocido, este está en blanco. La base de datos está en formato csv donde los distintos campos estan separados por punto y coma, por ejempo, las primeras líneas del fichero son:
+
+\code
+name;recclass;mass;fall;year;reclat;reclong
+Aachen;L5;21;Fell;1880;50,775;6,08333
+Aarhus;H6;720;Fell;1951;56,18333;10,23333
+Abee;EH4;107000;Fell;1952;54,21667;-113
+Acapulco;Acapulcoite;1914;Fell;1976;16,88333;-99,9
+\endcode
+
+\subsection met Meteorito
+En nuestro caso,  definiremos un tipo meteorito como un par, donde el campo first representa el nombre del meteorito (string) y el campo second será del tipo defMet, que define al resto de datos asociados que definen el meteorito.
+
+\code
+typedef pair<nombreM,defM> meteorito; 
+\endcode
+
+La especificación del tipo, así como su implementación se realizará en los ficheros meteorito.h y meteorito.hxx 
+
+\section dicc Diccionario
+
+De forma abstracta un diccionario es un contenedor que permite almacenar un conjunto de pares de elementos, el primero será la clave que deber ser única y el segundo la definición.  En nuestro caso, la clave será el nombre del meteorito y la defición contendrá   valores de tipo defM.
+Como TDA diccionario, lo vamos a dotar de un conjunto restringido de métodos (inserción de elementos, consulta de un elemento por clave). Este diccionario "simulará" un diccionario de la stl, con algunas claras diferencias pues, entre otros,  no estará dotado de la capacidad de iterar (recorrer) a través de sus elementos, que se hará en las siguientes prácticas.
+
+Asociado al diccionario, tendremos los tipos tipos
+\code 
+diccionario::entrada
+diccionario::size_type
+\endcode 
+que permiten hacer referencia al par de elementos almacenados en cada una de las posiciones del diccionario y el número de elementos del mismo, respectivamente. El primer campo de una entrada, first, representa la clave y el segundo campo, second, representa la definición. 
+
+
+
+
+\section sec_tar "Se Entrega / Se Pide"
+
+\subsection ssEntrega Se entrega
+
+
+En esta práctica se entrega los fuentes necesarios para generar la documentación de este proyecto así como el código necesario para resolver este problema. En concreto los ficheros que se entregan son:
+
+\li documentacion.pdf Documentación de la práctica en pdf.
+\li dox_diccionario Este fichero contiene el fichero de configuración de doxigen necesario para generar la documentación del proyecto (html y pdf). Para ello, basta con ejecutar desde la línea de comando
+\code
+ doxygen dox_diccionario
+\endcode
+La documentación en html la podemos encontrar en el fichero ./html/index.html, para generar la documentación en latex es suficiente con hacer los siguientes pasos
+\code
+ cd latex
+ make
+\endcode
+como resultado tendremos el fichero refman.pdf que incluye toda la documentación generada.
+
+\li diccionario.h Especificación del TDA diccionario.
+\li diccionario.hxx plantilla de fichero donde debemos implementar el diccionario.
+\li meteorito.h Plantilla para la especificación del TDA meteorito
+
+
+\li principal.cpp fichero donde se incluye el main del programa. En este caso, se toma como entrada el fichero de datos "meteorites_all.csv" y se debe cargar en el diccionario. 
+
+\subsection ssPide Se Pide
+
+  Se pide implementar el código asociado tanto para el TDA meteorito (en los ficheros meteoritos.h y meteorito.hxx) como el tipo de dato diccionario. En este último caso se  considerarán dos posibles representaciones basadas en el tipo de dato vector de la stl, analizando la eficiencia de las mismas, teniendo en cuenta las operaciones de insercion y búsqueda. La primera implementación se entregará en un fichero denominado diccionarioV1.hxx y la segunda en un fichero denominado diccionarioV2.hxx
+
+Para compilar con la primera implementación habrá que hacer 
+
+\li g++ -D DICC_V1 -o correctorV1 principal.cpp
+
+Para compilar con la segunda implementación se tendrá que utilizar 
+ 
+\li g++ -D DICC_V2 -o correctorV2 principal.cpp
+
+Por tanto, los alumnos deberán subir a la plataforma las dos implementaciones así como un análisis de la eficiencia de las mismas en los siguientes ficheros
+
+\li diccionarioV1.hxx
+\li diccionarioV2.hxx
+\li AnalisisCompartivo.pdf Dicho análisis valorará por un lado el tiempo dedicado a la insercion de toda la colección de meteoritos en un diccionario y por otro el tiempo necesario para realizar una búsqueda de todos los meteoritos en el mismo.
+
+\section fecha Fecha Límite de Entrega: Martes 28 de Octubre a las 23:59 horas.
+
+
+\section rep Representaciones
+
+El alumno deberá realizar dos implementaciones distintas del diccionario, utilizando como base el TDA vector de la STL, en la primera de ellas los elementos se almacenarán sin tener en cuenta el valor de la clave mientras que en la segunda debemos garantizar que los elementos se encuentran ordenados por dicho valor.
+
+\section primera Primera Representación:
+
+\subsection fact_sec1 Función de Abstracción :
+
+Función de Abstracción:
+AF: Rep => Abs
+   
+  dado D=(vector<entrada>  dic) ==> Diccionario Dic;
+  
+Un objeto abstracto, Dic, representando una colección de pares (clave,def) se instancia en la clase diccionario como un vector de entradas, definidas como  diccionario::entrada. Dada una entrada, x, en D,  x.first representa a una clave válida y x.second representa su definición.
+
+
+
+ 
+\subsection inv_sec1 Invariante de la Representación:
+
+ 
+Propiedades que debe cumplir cualquier objeto 
+
+\code
+Dic.size() == D.dic.size();
+
+
+
+Para todo i, 0 <= i < D.dic.size() se cumple
+	D.dic[i].first != "";
+	D.dic[i].fisrt != D.dic[j].first, para todo j!=i.
+
+
+\endcode
+
+\section segunda Segunda Representación:
+En este caso, la representación que se utiliza es un vector ordenado de entradas, teniendo en cuenta el valor de la clave. 
+ 
+\subsection fact_sec2 Función de Abstracción :
+
+Función de Abstracción:
+AF: Rep => Abs
+   
+    dado D=(vector<entrada>  dic) ==> Diccionario Dic;
+
+Un objeto abstracto, Dic, representando una colección ORDENADA de pares   (clave,def), se instancia en la clase diccionario como un vector de entradas, definidas como  diccionario::entrada. Dada una entrada, x, en D,  x.first representa a una clave válida y x.second representa su definición.( 
+
+
+ 
+\subsection inv_sec2 Invariante de la Representación:
+
+
+Propiedades que debe cumplir cualquier objeto 
+
+\code
+Dic.size() == D.dic.size();
+
+Para todo i, 0 <= i < D.dic.size() se cumple
+	D.dic[i].first != "";
+Para todo i, 0 <= i < D.dic.size()-1 se cumple
+	D.dic[i].first< D.dic[i+1].first
+
+\endcode
+*/

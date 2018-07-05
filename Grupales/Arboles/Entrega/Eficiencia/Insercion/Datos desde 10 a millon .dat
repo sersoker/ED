@@ -1,0 +1,63 @@
+unordered
+Abrimos ./DatosGenerados/diez.txt
+100
+set
+Abrimos ./DatosGenerados/diez.txt
+100
+gs1
+Abrimos ./DatosGenerados/diez.txt
+100
+unordered
+Abrimos ./DatosGenerados/cienDatos.txt
+100
+set
+Abrimos ./DatosGenerados/cienDatos.txt
+100
+gs1
+Abrimos ./DatosGenerados/cienDatos.txt
+100
+unordered
+Abrimos ./DatosGenerados/milDatos.txt
+100
+set
+Abrimos ./DatosGenerados/milDatos.txt
+100
+gs1
+Abrimos ./DatosGenerados/milDatos.txt
+103e-05
+unordered
+Abrimos ./DatosGenerados/diezMilDatos.txt
+100
+set
+Abrimos ./DatosGenerados/diezMilDatos.txt
+100
+gs1
+Abrimos ./DatosGenerados/diezMilDatos.txt
+100
+unordered
+Abrimos ./DatosGenerados/diezmilDatos.txt
+102e-05
+set
+Abrimos ./DatosGenerados/diezmilDatos.txt
+104e-05
+gs1
+Abrimos ./DatosGenerados/diezmilDatos.txt
+100.00038
+unordered
+Abrimos ./DatosGenerados/cienmilDatos.txt
+100.00027
+set
+Abrimos ./DatosGenerados/cienmilDatos.txt
+100.00044
+gs1
+Abrimos ./DatosGenerados/cienmilDatos.txt
+100.00417
+unordered
+Abrimos ./millon.txt
+100.00155
+set
+Abrimos ./millon.txt
+100.00367
+gs1
+Abrimos ./millon.txt
+100.03767

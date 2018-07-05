@@ -1,0 +1,95 @@
+Lectura de codigos desde archivo
+ - Diferenciar () de caracteres sueltos
+
+El arbol para codigos sera un tree< pair<string,int> > arbol
+
+
+Dado un nodo n, de tipo tree< pair<string,int> >::node, tenemos que (∗n) es una referencia al par que almacena
+cuyo primer elemento , esto es (∗n).first, es un string que representa :
+	- un indentificador de aplicación IA
+	- un caracter aislado del código, en cuyo caso (∗n).first.size()==0, Donde necesariamente debe tomar valores en {0123456789}. 
+
+Por otro lado, el segundo elemento del par, (∗n).second, es un entero que se utiliza para:
+	- identificar si el nodo es un IA, en cuyo caso debe verificarse que ((∗n).second <0)
+	- identificar si el nodo contiene el caracter final de subcódigo (representado por z
+	en el ejemplo anterior), donde (∗n).second > 0. En este caso, el valor será el
+	número total de codigos completos que cuelgan del mismo. Destacar que este
+	valor NO corresponde con el número de hijos directos, sino con el número total
+	de hojas que cuelgan del subárbol.
+
+
+Los hijos de un nodo deben estar NECESARIAMENTE ORDENADOS de menor a mayor, esto es (*n).first < (*n.right_sibling()).first
+
+
+
+-----------------------------------------------------
+-----------------------------------------------------
+-----------------------------------------------------
+--------------------ENTREGA: ------------------------
+-----------------------------------------------------
+-----------------------------------------------------
+-----------------------------------------------------
+-----------------------------------------------------
+gs1Set.h
+gs1Set.cpp
+
+
+* Lo que va implementado esta mal
+
+**************************************************************************
+		tree.h y tree.hxx y nodetree.hxx 
+
+		Contienen la implementacion de la clase tree, y no se deben tocar.
+		
+		generadorCodigos.cpp Generador de códigos, este fichero permite generar tan tos códigos de ejemplo como sea necesario. 
+		
+		prueba_gs1.cpp Fichero de prueba, donde se incluyen el código para cargar un fichero de códigos en cualquier contenedor de 			string,
+
+**************************************************************************
+
+
+
+
+Tareas a Realizar.
+
+implementar los metodos de la clase gs1Set y un codigo de prueba donde se inserten, busquen y borren al menos un millón de códigos obtenidos con el generador.
+
+
+Hacer una comparativa en tiempo de ejecución cuando utilizamos directamente un contenedor asociativo set y unordered set:
+	unordered_set<string>
+	set<string>
+
+Clase gs1Set
+Tareas a realizar: El alumno debera implementar la clase gs1Set , junto con el codigo de prueba de los distintos metodos.
+
+Miembro gs1Set::insert (const string &s)
+implementar este metodo correctamente OJO ESTE METODO SOLO SIRVE PARA DAR UNA IDEA DEL PROCESO DE INSERCION, HAY QUE IMPLEMENTARLO
+CORRECTAMENTE
+
+Miembro gs1Set::reading_gs1Set ()
+implementar este metodo correctamente OJO ESTE METODO OS SIRVE PARA PODER CONSTRUIR UN ARBOL NO TIENE EN CUENTA EL INVARIANTE DE LA REPRESENTACION AL NO CONSIDERAR EL CAMPO INT DEL NODO!!!!! DEBEIS MODIFICARLO PARA QUE LO HAGA DE FORMA CORRECTA
+
+
+
+
+
+
+NOTAS: Arreglado error en gs1Set.h y cpp, la funcion insert tenia bool en uno e int en otro. funciona con los dos (aparentemente)
+
+prueba_gs1 su main llama al metodo load declarado encima, este pasado un string (el fichero con los datos pasado como parametro) y un contenedor, llama al metodo insert para meter cada una de las lineas. Hay que cambiar el metodo insert de gs1set por que no va bien. 
+
+Tambien hay que cambiar el metodo print
+
+En teoria LOAD va bien, comprobar
+
+
+Se han generado archivos de prueba, en la carpeta DatosGenerados, son correctos segun implementacion del profesor
+
+
+
+
+
+
+
+
+

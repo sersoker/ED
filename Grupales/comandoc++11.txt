@@ -1,0 +1,3 @@
+g++ -o ejecV1 -D DICC_V1 -std=c++0x fichero.cpp
+g++ -o ejecV2 -D DICC_V2 -std=c++0x fichero.cpp
+

@@ -1,0 +1,9 @@
+comando:
+Polinomio con listas: 
+	g++ -std=c++0x -D LISTAS pruebaPolinomio.cpp -o pruebaPolinomio
+Polinomio con map:
+	g++ -std=c++0x -D MAP pruebaPolinomio.cpp -o pruebaPolinomio
+Vector disperso con listas:
+	g++ -std=c++0x -D LISTAS pruebaVectorD.cpp -o pruebaVectorD
+Vector disperso con map: 
+	g++ -std=c++0x -D MAP pruebaVectorD.cpp -o pruebaVectorD

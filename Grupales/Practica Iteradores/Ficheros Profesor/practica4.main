@@ -1,0 +1,239 @@
+/*! \mainpage  Iterando sobre el diccionario 
+ *
+\version v0
+\author  Juan F. Huete
+
+\tableofcontents
+
+\section intro_sec Introducción
+
+En la práctica anterior permitimos parametrizar un diccionario mediante el uso de plantillas (templates). En esta práctica nuestro objetivo es dotar al diccionario de un mecanismo para poder iterar por el conjunto de entradas que tiene almacenadas. Este mecanismo es esencialmente un iterador, que no es otra cosa que un objeto que se mueve a través de un contenedor (en la práctica nuestro diccionario) de otros objetos (entradas en el diccionario). La ventaja del uso del iterador es que nos proporciona un mecanismo estándar para acceder a los elementos de un contenedor, sin necesidad de conocer como dicho contenedor esta implementado internamente.
+
+\section doc Generar la Documentación.
+
+Al igual que en la práctica anterior la documentación se entrega mediante un fichero pdf, así como mediante un fichero tgz que contiene todos los fuentes junto a los archivos necesarios para generar la documentación (en latex y html). Para generar los ficheros html con la documentación de la misma es suficiente con ejecutar desde la línea de comandos
+
+\code
+doxygen dox_diccionario
+\endcode
+
+Como resultado nos genera tres directorios, uno con la documentación en html, otro en rtf y el último con la documentación en latex. 
+
+De igual forma que en la práctica anterior, se entrega la práctica de templates corregida, eso si, sólo sobre la versión DICC_V1. Los cambios para la versión V2 son similares, y por tanto en caso de no haber hecho esta parte la podeis implementar de forma fácil.
+
+Además, se entregam los ficheros de especificación nueva sobre el diccionario. Estos ficheros incluyen  algunas modificaciones que viene dadas por el uso de los iteradores. 
+
+\li diccionario.h  En el nuevo fichero diccionario.h se entrega la nueva especificación de la clase diccionario, donde además se le añade la especificación del iterator. Se os pide implementar los distintos métodos así como el código necesario para demostrar el correcto funcionamiento del mismo.
+\li diccionarioV1.hxx  En este fichero se incluyen la implementación de algunos  métodos de la clase diccionario utilizando la versión DICC_V1, además se incluye las cabeceras que hacen referencia al iterator, debiendo de añadir también las que hacen referencia al const_iterator. 
+
+ En la práctica es OBLIGATORIO entregar la versión en la que el diccionario está ordenado, esto es diccionarioV2.hxx.
+
+
+Pasamos a detallar cada una de las partes de la práctica.
+
+\section iterar Iteradores sobre diccionario.
+
+Casi todos los contenedores disponen de una (o varias) clases asociada llamada iterator.  Para poder asociar el iterador al contenedor una alternativa es añadir una clase anidada (una clase que se define dentro de la clase contenedor). Ambas clases están estrechamente relacionadas, por lo que es muy usual que se desee que tanto el contenedor como el iterador sean clases amigas. Así, cuando se crea una clase friend anidada es conveniente declarar primero el nombre de la clase y después definir la clase. Así evitamos que se confunda el compilador.
+
+\code
+template <typename K, typename D>
+class diccionario {
+public:
+   class iterator;  //declaracion previa
+
+   ....
+   iterator begin();  // Podemos declarar el iterator porque ya lo hemos declarado previamente
+
+   ....
+   class iterator {
+      //definicion del iterator
+      public:
+	iterator();
+        ....
+      private:
+         friend class diccionario; // declaramos diccionario como amigo de la clase
+        ....
+
+    }; // end de la clase iterator
+   private:
+        friend class iterator; // declaramos el iterador como amigo de la clase
+
+}; // end de la clase diccionario
+\endcode
+
+Es importante notar que el tipo asociado al iterador es diccionario<K,D>::iterator 
+Por tanto, para declarar un diccionario y un iterator sobre dicho diccionario debemos hacer
+
+\code
+diccionario<string,int> dic;
+diccionario<string,int>::iterator it;
+
+diccionario<int,float> d2;
+diccionario<int,float>::const_iterator it2;
+\endcode
+
+\section ini begin y end
+
+Para poder iterar sobre los elementos del contenedor, debemos dotarlo de dos nuevos métodos (que siguiendo en estándar de la Standard Template Library llamaremos begin() y end(). begin() devuelve un iterator que apunta al principio del contenedor (primer elemento). Sin embargo, nos devuelve un iterator que apunta «al final» del contenedor. Es importante recordar que la posición final del contenedor no es una posición válida del mismo, esto es, no hay ningún elemento en dicha posición (es conveniente pensar que es la posición siguiente al último elemento del contenedor). Por ello, no es correcto dereferenciar el elemento alojado en dicha posición ( *end() ).
+
+Para imprimir todos los elementos del diccionario podríamos hacer
+\code
+for (it=dic.begin(); it!=dic.end();++it){
+    cout << (*it).first << (*it).second << endl;
+}
+\endcode
+
+Obviamente, no es posible realizar la asignación it = d2.begin() pues el iterador it está definido para iterar sobre valores de tipo pares de string,int y no sobre entradas int,float. Además podemos ver el uso de paréntesis para acceder a los elementos (*it).first. En este caso, si hacemos *it.first, dada la precedencia de los operadores, primero se evaluaría it.first.
+
+Además del begin y end que devuelven el iterator, y siguiendo la filosofía del estándar c++11, implementaremos dos métodos, el cbegin() y el cend() que devuelven dos const_iterator
+
+\code
+diccionario<string,int>::const_iterator c_it = dic.cbegin();
+\endcode
+\section modif Modificación en la especificación de algunos métodos.
+
+Al permitir el uso de iteradores hay  métodos de la clase diccionario que ya no tendrían sentido tal y como lo estaban previamente definidos. 
+
+\li typename diccionario<K,D>::iterator  diccionario<K,D>::find( const Key & s) ; 
+
+En este caso busca una entrada en el diccionario. Si la encuentra devuelve el iterador que apunta a la entrada, en caso contrario devuelve end().
+\code
+typename diccionario<K,D>::iterator  diccionario<K,D>::find( const Key & s) ;
+....
+Ejemplo de uso:
+diccionario<string,int>::iterator it;
+it = Dic.find("Hola");
+if (it == Dic.end()) cout << "No esta " << endl;
+else cout << "Clave "<< (*it).first << " Definicion" << (*it).second;
+\endcode
+
+\li diccionario<K,D>::const_iterator  diccionario<K,D>::find( const Key & s) const;
+
+El comportamiento es similar al anterior pero en este caso devuelve un iterador constante.
+
+
+\section inter Representacion del iterator
+
+Un iterator de la clase diccionario nos debe permitir el acceso a los datos almacenados el en diccionario propiamente dicho. Una primera alternativa sería representar el iterator como un iterador sobre el vector, esto es 
+
+\code
+class diccionario{
+....
+  class iterator {
+    ....
+    entrada & operator*();
+    ......
+    private:
+    vector<entrada>::iterator it_v; // Puntero a la entrada del vector.
+   };
+};
+\endcode
+Sin embargo, con esta representación sería posible violar el invariante de la representación, pues el usuario de la clase podría modificar el contenido de la clave ejecutando 
+
+\code
+Dic["Hola"] = 24;
+...
+it = Dic.find("Hola");
+if (it == Dic.end()) cout << "No esta " << endl;
+else {
+ (*it).first ="PERRO";
+}
+\endcode
+
+Esto nos daría problemas pues estaríamos modificando la clase, y particularmente en la versión  DICC_V2, donde se asumen los datos ordenados, el diccionario podría dejar de cumplir el invariante de la representación. A partir de este momento las operaciones de búsqueda e inserción dejarían de funcionar correctamente. 
+
+Para solucionar el  problema se incluye una nueva definición de tipo en el diccionario, en concreto se define value_type como un par  pair<const Key, Def>. En este caso, la clave es constante y no se puede realizar ninguna modificación a la misma.
+
+
+
+\subsection vt Trabajando con value_type
+En esta sección se incluye información para poder garantizar que se satisface el invariante de la representación siempre.
+
+En este caso el operator* deberá devolver una referencia a un elemento de tipo value_type
+
+\code
+class diccionario{
+typedef pair<const Key, Def> value_type;
+....
+  class iterator {
+    ....
+    value_type & operator*();
+    ......
+    private:
+    value_type * it_v; // Puntero a la entrada del vector.
+   };
+....
+  class const_iterator {
+     .....
+     const value_type & operator*();
+     ....
+     private:
+     value_type * it_v;
+};
+\endcode
+
+
+Por lo tanto, en la práctica, a la hora de implementar los distintos métodos, podremos necesitar  de un mecanismo para transformar un puntero a pair<K,D> a un puntero a pair<const K,D>. Esto lo podemos hacer utilizando un casting, como ilustra el siguiente código (fichero ejemplo.cpp) .
+
+\code
+#include <vector>
+#include <iostream>
+#include <map>
+
+using namespace std;
+
+int main(){
+
+vector<pair<string,int> > V; 
+pair<string,int> aux("Hola",2);
+pair<string,int> * p_e;
+pair<const string,int> * p_vt;
+
+V.push_back(aux);
+
+p_e = &V[0]; // tomamos la direccion del primer elemento del vector
+cout << (*p_e).first << (*p_e).second<< endl;
+(*p_e).first = "XXXX"; //Correcto 
+
+p_vt = (pair<const string,int> *) &V[0];
+cout << (*p_vt).first << (*p_vt).second<< endl;
+(*p_vt).second = 234;
+(*p_vt).first = "XXXX"; //INCORRECTO
+}
+\endcode
+
+El error que da el compilador es  algo del tipo
+
+ejemplo.cpp: En la función ‘int main()’:
+ejemplo.cpp:24:17: error: pasar ‘const string’ como el argumento ‘this’ de operator=(const char*)’ descarta a los calificadores.
+
+\section pido SE PIDE
+
+En concreto se pide implementar los métodos asociados a los iteradores de la clase diccionario considerasndo como implmentacion la version DICC_V2. Así, al iterar sobre los elementos los tendríamos ordenados por clave.
+
+\code
+for (it=dic.begin(); it!=dic.end();++it){
+    cout << (*it).first << (*it).second << endl;
+}
+\endcode
+
+
+En este caso, para realizar  la práctica, el alumno deberá modificar los ficheros de implementación (.hxx). 
+
+
+De igual forma se debe modificar el fichero prueba.cpp de manera que se demuestre el correcto comportamiento del diccionario cuando se instancia con distintos tipos.
+
+\subsection SP2 A ENTREGAR
+
+El alumno debe entregar los siguientes ficheros, con las correciones necesarias para poder trabajar 
+
+\li diccionario.h Especificación del TDA diccionario.
+\li diccionarioV2.hxx  segunda versión del diccionario.
+\li prueba.cpp fichero de prueba del diccionario donde se incluyen los métodos que trabajan sobre meteorito
+
+Dicha entrega se debe realizar antes de el Miercoles 27 de Noviembre, a las 10:30 horas (am).
+
+*/
+
+
+

@@ -1,0 +1,35 @@
+Para la prueba de eficiencia en borrado y busqueda se ha usado una modificacion del metodo load, haciendo que en vez de insertar los codigos en el contenedor los busque y los borre.
+
+template <typename T>
+void busc(T  &  contenedor, const string & s) {
+ ifstream fe;
+ string cadena;
+ //cout << "Abrimos "<< s << endl;
+ fe.open(s.c_str(), ifstream::in);
+ if (fe.fail())
+ {
+   cerr << "Error al abrir el fichero " << s << endl;
+ } else {
+
+    while ( !fe.eof() )
+      { getline(fe,cadena,'\n');
+       	if (!fe.eof()) {
+	 //  cout << "leo:: "<< cadena << endl;
+
+	   contenedor.find(cadena);
+         }
+     }
+
+    } // else
+  fe.close();
+ }
+
+
+
+En cuanto a la medicion de tiempos se ha usado:
+
+ start = clock();
+//llamada a la funcion de insercion/busqueda/borrado
+ end= clock();
+ double dif = end-start;
+cout<< dif/(double) (CLOCKS_PER_SEC * 1000.0) << endl;

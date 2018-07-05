@@ -1,0 +1,287 @@
+/*! \mainpage  GS1 Código Electrónico de Producto
+ *
+\version v0
+\author  Estructuras de Datos
+
+\section intro_sec Introducción
+
+ 
+
+
+ El objetivo de esta práctica es el de profundizar en el  uso de conceptos asociados a la abstracción de datos en general, y los Tipos de Datos Abstractos.  En esta practica se pretende avanzar en el uso de las estructuras de datos gerárquicas complejas como es el tipo tree (definido en tree.h) 
+
+
+
+\section descripcion Descripcion
+
+
+Un objeto de la clase gs1Set  representara un contenedor que permite almacenar un
+codigo electrónico de producto, en concreto consideraremos la normativa gs1-128
+
+El gs1-128 es un sistema estándar de identificación mediante código de barras
+utilizado internacionalmente para la identificación de mercancías en entornos
+logísticos y no detallistas. Este sistema se utiliza principalmente para la identificación de unidades de
+expedición.
+
+
+El código gs1-128  se representará mediante un  string (que además suele venir representado como un código de barras) como indica la figura, 
+
+
+\image html codigoBarras.jpg
+\image latex codigoBarras.eps "Ejemplo de codificación GS1" width=10cm
+
+ ejemplos de códigos válidos son:
+
+- (01)09501101020917, representando el código de la agrupación.
+
+- (01)09501101020917(17)131016(00)095011011234567889, representando el código del envio.
+
+Una multinacional de la distribución debe ser capaz de almacenar información sobre todos los productos con los que está trabajando, por lo que necesita una estructura de datos rápida para poder incluir nuevos productos, identificar si un producto está dentro de su cadena, así como borrar los productos cuando estos han llegado a su destino. El número de productos puede ser muy elevado, pues para cada uno de ellos, tanto de forma aislada como cuando se empaquetan,  debe tener asignado  un código distinto.
+
+\section  codigos Nuestros Códigos
+En esta practica consideraremos códigos correctos, aquellos obtenidos según la siguiente definicion:
+ Una código  correcto sólo puede contener   dígitos (del 0 al 9)  junto con  paréntesis de apertura y cierre. 
+ Por tanto, no debe  tener espacios ni delimitadores del tipo comillas, llaves, comas, puntos, etc. 
+
+En el código podemos distinguir dos partes, encerrados entre paréntesis los identificadores de aplicación, IA, que son unos prefijos numéricos creados para dar significado inequívoco a los elementos de datos estandarizados que se encuentran situados a continuación (son subcódigos dentro el código gs1). Cada prefijo identifica el significado y el formato de los subcódigos que le siguen.
+
+En la actualidad, existen más de 100 identificadores de aplicación estandarizados internacionalmente. Por ejemplo, 
+
+- 00 Código Seriado de la Unidad de Envío (SSCC) 
+- 01 Código de agrupación  
+- 02 Código del artículo / agrupación contenido  
+- 37 Cantidades (acompañando al IA 02)  
+- 10 Número de lote  
+- 11 Fecha de fabricación  
+- 13 Fecha de envasado  
+- 15 Fecha de consumo preferente  
+- 17 Fecha de caducidad
+etc.
+
+En la práctica NO nos preocuparemos de generar códigos correctos, sino que consideraremos como correcto cualquier codigo que tenga el formato (yy)xxxxz(yyy)xxxxxxxz(yy)xxxxxz, donde yyy e  xxxxxz  son digitos del 0 al 9 representando el IA y el código  asociado. (El alumno interesado puede consultar cómo se construyen los códigos en el enlace http://www.aecoc.es/BAJAR/.php?id_doc=1178&id=GS1%20128.pdf&folder=documento_socio, aunque no es necesario para realizar la práctica pues utilizaremos una versión simplificada, y no necesariamente correcta de los mismos.) Ejemplos de códigos, obtenidos con un generador que se entrega junto a la práctica, son:  
+
+- (02)8423(10)0980(11)141215
+- (02)8423(10)0981(11)141215
+- (02)8324(10)0982(13)141010
+- (03)842442(10)211(73)0120(11)12334
+- (01)0283428792861(00)61009429(10)13061567017(37)949293936
+- (01)2280008351471(10)55261553(01)24270549214(00)633449065
+- (00)43138107(00)61008194(02)25302556869(10)3249883(02)27649784857924
+- (00)48922275014(01)2066504(01)5361653843303(00)3253312(00)0598954
+- (00)5225693162600(10)129503060529(37)934291064(10)62825123(02)50617840299718
+- (00)1571291688(10)8604376635(00)2973865108
+
+
+\section especi Especificación del tipo
+
+
+En esta práctica nos proponemos ayudar a la multinacional  en la gestión de los códigos diseñando un nuevo  contenedor, que lo llamaremos gs1Set, siguiendo la especificación que nos ha proporcionado, en gs1Set.h. El objetivo es el de permitir el acceso lo más rápido posible a un determinado código,  asumiendo que cada uno de los códigos que han sido obtenidos (por ejemplo, leidos de un código de barras del producto) son correctos.
+
+
+
+
+ @section uso_sec Uso del gs1Set
+ * @subsection declaracion Declaración del gs1Set
+ * un sg1Set debe declararse como sigue
+ * @code
+ * #include <string>
+ * #include "sg1Set.h"
+ *
+ * int main(int argc, char ** argv) {
+ *
+ *    sg1Set epc;
+ *
+ *     return 0;
+ * }
+ * @endcode
+ *
+ * @subsection uso  Inserción y borrado de elementos
+ * @code
+ * #include "sg1Set.h"
+ * #include <string>
+ * #include <iostream>
+ *  using namespace std;
+ * int main(int argc, char ** argv) {
+ *
+ *     sg1Set epc;
+ *     
+
+ *     // insercion 
+ *     if (epc.insert("(02)8423(10)0980(11)141215") { 
+         cout << "Insertado codigo"<< endl;
+       }
+	epc.insert("(02)8423(10)0980(11)141215");
+	epc.insert("(02)8423(10)0981(11)141215");
+	epc.insert("(03)842442(10)211(73)0120(11)12334");
+ *       
+ *
+ *     // borrado
+ *     if (epc.erase("(03)842442(10)211(73)0120(11)12334")) {
+ *        cout << "borrado" << endl;
+ *     if (epc.erase("(02)8423") {
+          cout << "borrado de todos los códigos que comienzan con (02)8423" << endl;
+ *     return 0;
+ * }
+ *
+ * @endcode
+ * @subsection uso_busqueda buscar un valor
+ * @code
+ * #include "sg1Set.h"
+ * #include <string>
+ * #include <iostream>
+ * using namespace std;
+ * int main(int argc, char ** argv) {
+ *
+ *     sg1Set epc;
+ *     sg1Set epc::iterator it;
+
+ *     // adding key value pair to the Trie
+ *     if (epc.insert("(02)8423(10)0980(11)141215") { 
+         cout << "Insertado codigo"<< endl;
+       }
+	epc.insert("(02)8423(10)0980(11)141215");
+	epc.insert("(02)8423(10)0981(11)141215");
+	epc.insert("(03)842442(10)211(73)0120(11)12334");
+ *     if (epc.find("(02)8423(10)0980")!=epc.end() {
+ *        cout << "código encontrado" <<  endl;
+ *     }
+ *     it = epc.find("(02)8423(10)0980");
+ *      cout << "Tiene " << (*it).second << "subcodigos en el siguiente nivel" << std::endl;
+ *     }
+ *     while (it!= epc.end()){
+           cout << (*it).first << (*it).second << endl;
+           ++it;
+       }
+ *     return 0;
+ * }
+ * @endcode
+ *
+
+@section representacion Representación del tipo gs1Set
+
+Para representar el conjuto de  códigos utilizaremos un árbol general, donde por ejemplo dado el  código con el formato 
+@code
+(yy)xxxxz(yyy)xxxxxxxz(yy)xxxxxz
+@endcode
+ en cada nodo almacenamos o bien un IA, representado por los caracteres yy en el código y que debe ir entre paréntesis, o bien cada uno de los caracteres aislados del subcódigo. Así, dado el código (02)8423(10)0985(11)141217, podemos identificar tres subcódigos, el primero para el IA=(02) con valor 8423, el segundo asociado al IA (10) con valor 0985 y el tercero asociado al IA (11) con valor 141217.
+ 
+
+La siguiente figura nos muestra cómo se representa el código,
+
+\image html arboles-2.jpg
+\image latex arboles-2.eps "Árbol asociado a distintos códigos gs1" width=10cm
+
+Así, siguiendo el camino desde la raíz del árbol hasta cada hoja obtenemos la secuencia de símbolos que representa al código. Si nos ubicamos en un nodo, el camino hacia la raíz nos representa un prefijo del código que es común a cada uno de los hijos donde cada uno representan las distintas posibilidades de símbolos diferentes que pueden continuar al símbolo representado por el nodo padre.
+
+La búsqueda de un código, implica avanzar desde la raíz descendiendo de forma similar a como se hacen una búsqueda en un diccionario. Donde dado un nodo, que llamaremos el nodo actual y que representa a un caracter del código, se busca dentro de la lista de sus hijos el nodo que contienen el caracter siguiente. Una vez encontrado, dicho nodo pasa a ser el nodo actual y el proceso se repite hasta alcanzar un nodo hoja, (final de código) o bien hasta que no encontremos el caracter dentro de los hijos, por lo que decidimos que el código no está en el árbol. 
+
+Una de las ventajas de esta estructura es que las búsquedas de claves se hace más eficiente, pues tendrá en el peor caso un ordern O(l), siendo l la longitud del código, siendo además independiente del número de elementos almacenados en el árbol. Situación que no se da cuando consideramos otras posibles implementaciones como el set o map, donde la búsqueda depende más del número de elementos en el conjunto (O(log(n)).
+
+Además,  otra ventaja de esta representacíon es que nos permite hacer búsquedas eficientes de nodos que comparten prefijos. En nuestro caso, el prefijo puede representar el país, la empresa, el tipo de paquete y/o producto, etc. 
+
+Por tanto, y para facilitar estas búsquedas, dentro del árbol, distinguimos un tipo de nodo especial que se corresponde con los  caractereres fin de subcódigo, representados como z en el ejemplo anterior, esto es, aquel caracter que precede al paréntesis de apertura '(' y el último caracter del código.
+
+Con el objetivo de poder identificar tanto IA como caracteres individuales, la etiqueta asociada a cada node contendrá un string, pero además debe contener un valor entero cuya semántica se muestra a continuación. Por tanto, el gs1 se codificará como 
+@code
+tree< pair<string,int> > arbol;
+@endcode
+donde dado un nodo n, de tipo tree< pair<string,int> >::node, tenemos que (*n) es una referencia al par que almacena, cuyo primer elemento , esto es (*n).first,  es un string que representa un indentificador de aplicación IA, o un caracter aislado del código, en cuyo caso (*n).first.size()==0. En este último caso, necesariamente debe tomar valores en {0123456789}. Por otro lado, el segundo elemento del par, (*n).second,  es un entero que se utiliza para:
+
+- identificar si el nodo es un IA, en cuyo caso debe verificarse que ((*n).second < 0)
+
+ - identificar si el nodo contiene el caracter final de subcódigo (representado por z en el ejemplo anterior), donde  (*n).second > 0. En este caso, el valor será el número total de  codigos completos que cuelgan del mismo. Destacar que este valor NO corresponde con el número de hijos directos, sino con el número total de hojas que cuelgan del subárbol. 
+
+
+
+@li Los hijos de un nodo deben estar NECESARIAMENTE ORDENADOS de menor a mayor, esto es
+@code
+(*n).first < (*n.right_sibling()).first
+@endcode
+
+
+\section ficheros Ficheros que se entregan 
+
+Descripción de los ficheros
+
+
+@li gs1Set.h 
+
+	Fichero de especificacion de la clase gs1Set
+
+@li gs1Set.cpp 
+
+Fichero de implementacion de la clase gs1Set. En este caso, se entregan algunos codigos implementados. OJO estos códigos NO son los correctos, sólo se entregan a modo de ejemplo para simplificar (sirviendo como ayuda) el comienzo de la implementaciones que se deben realizar con gs1Set
+
+@li tree.h
+
+Especificación de la clase tree
+
+
+@li tree.hxx
+@li  nodetree.hxx
+
+Estos dos ficheros contiene la implementacion de la clase tree, no se deben tocar.
+
+
+
+ @li generadorCodigos.cpp 
+Generador de códigos, este fichero permite generar tantos códigos de ejemplo como sea necesario. Para compilarlo podemos usar
+@code
+ g++ -o generador generadorCodigos.cpp -std=c++0x
+@endcode
+y para obtener, por ejemplo, el fichero "datos1M.txt" con un millón de códigos (1000000) podemos ejecutar
+@code
+./generador 1000000 > datos1M.txt
+@endcode
+
+@li prueba_gs1.cpp
+
+Fichero de prueba, donde se incluyen el código para cargar un fichero de códigos en cualquier contenedor de string,
+
+@code
+* @brief Carga el fichero en memoria
+* @param contenedor contenedor de salida
+* @param s nombre del fichero 
+* @pre T debe tener el método insert(const string &)
+template <typename T>
+void load(T  &  contenedor, const string & s) {
+ ifstream fe;
+ string cadena;
+ cout << "Abrimos "<< s << endl;
+ fe.open(s.c_str(), ifstream::in);
+ if (fe.fail())    
+ {
+   cerr << "Error al abrir el fichero " << s << endl;
+ } else {
+
+    while ( !fe.eof() )
+      { getline(fe,cadena,'\n');
+       	if (!fe.eof()) {
+	   cout << "leo:: "<< cadena << endl;
+	   
+	   contenedor.insert(cadena);
+         }
+     }
+   
+    } // else
+  fe.close();
+ }
+@endcode
+
+Para compilar el fichero de prueba es necesario realizar
+@code
+> g++ -o prueba prueba_gs1.cpp gs1Set.cpp -std=c++0x
+@endcode
+y lo ejecutamos como
+@code
+./prueba datos100.txt
+@endcode
+
+\section sec_tar Tareas a Realizar. 
+Se pide implementar los metodos de la clase gs1Set y un codigo de prueba donde se inserten, busquen y borren al menos un millón de códigos obtenidos con el generador. Hacer una comparativa en tiempo de ejecución cuando utilizamos directamente un contenedor asociativo set y unordered set:
+
+@li unordered_set<string>
+@li set<string> 
+
+
+ */
